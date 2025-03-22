@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Block Websites",
-    "description": "Runs a script on www.example.com automatically when user installs the extension",
+    "description": "Configure blocking anything you dislike. Be in charge of your time.",
     "version": "1.0",
     "icons": {
       "16": "images/icon-16.png",
@@ -13,6 +13,17 @@
     {
       "service_worker": "blocker_background.js"
     },
+    "action" :
+    {
+      "default_popup" : "popup.html"
+    },
+    "content_scripts": [
+     {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+     }
+    ],
     "permissions" : [
       "tabs",
       "storage"

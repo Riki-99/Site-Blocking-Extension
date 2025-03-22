@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function inString(tocheck, parentstr)
+        {
+            len = tocheck.length;
+            tocheck = tocheck.toLowerCase();
+            parentstr = parentstr.toLowerCase();
+            for(i = 0; i < parentstr.length; i++)
+            {
+                console.log("parentstr[i]" + parentstr[i] + "   tocheck[0]" + tocheck[0]);
+                if(parentstr[i] == tocheck[0])
+                {
+                    if(parentstr.slice(i,len+i) == tocheck)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    </script>
+</body>
+</html>
