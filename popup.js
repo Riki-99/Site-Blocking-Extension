@@ -1,5 +1,5 @@
 // Array for dealing with the urls.
-let siteUrlArray = new Array();
+let urlArray = new Array();
 
 // The input field for inputting value
 let addr = document.querySelector("#website-url");
@@ -14,34 +14,38 @@ btn.addEventListener("click", async () =>
     // New site url to be added
     let newSiteUrl = addr.value;
 
-    getData();
-    await new Promise((resolve) => setTimeout(resolve, 200))
+    await getData();
     console.log(newSiteUrl); 
-    siteUrlArray.push(newSiteUrl);
-    await new Promise((resolve) => setTimeout(resolve, 200))
-
+    urlArray.push(newSiteUrl);
 
     // Stores the updated siteUrlArray in the chrome local storage
-    chrome.storage.local.set({username : siteUrlArray}, () =>{
-        console.log("Username successfully added. The array is : ");
-        console.log(siteUrlArray);
-        console.log("Username added complete");
-        console.log();
+    await new Promise((resolve) => {
+        chrome.storage.local.set({siteUrlArray : urlArray}, () =>
+            {
+                console.log("Url successfully added. The array is : ");
+                console.log(urlArray);
+                console.log("Url added complete");
+                console.log();
+                resolve();
+             })
     })
     displayTables();
-})
+    }
+)
+    
+    
 
 // Displays the tables in popup.html
 
 async function displayTables()
 {
+    urlArray = await getData();
     let table = document.querySelector("#blocked-list");
-    await new Promise((resolve) => setTimeout(resolve, 200))
     console.log("Displaying array : ")
-    console.log(siteUrlArray)
+    console.log(urlArray)
     console.log("Display complete")
     console.log();
-    len = siteUrlArray.length;
+    len = urlArray.length;
 
     // Reseting the output table
     table.innerHTML = '';
@@ -49,31 +53,32 @@ async function displayTables()
     for(i = 0; i < len; i++)
     {
        let tr = document.createElement("tr");
-       tr.innerHTML = `<td>${i+1}.</td> <td> ${siteUrlArray[i]}</td>`;
+       tr.innerHTML = `<td>${i+1}.</td> <td> ${urlArray[i]}</td>`;
        table.appendChild(tr);
     }
 }
 
 // Async function to make sure siteUrlArray isn't accessed before it is completely read
-async function getData()
+function getData()
 {
-    chrome.storage.local.get(['username'], function(result){
-        let returnObj = result;
-        siteUrlArray = returnObj.username;
-    });
-    // Waits 1 sec before handing control over to the next statement
-    await new Promise((resolve) => setTimeout(resolve, 200))
-}
-
-// Displaying Tables at the start
-document.addEventListener("load", () => {
-    getData();
-    displayTables();
-})
-
-function reset()
-{
-    chrome.storage.local.set({username : new Array()}, () =>{
-        console.log("Reset complete");
+    // Wrapping the getting of data in a new promise to ensure that data isn't accessed before being read
+    return new Promise((resolve) => {
+        chrome.storage.local.get(function(result){
+            //Returns the stored array or if an array isn't stored, it returns a new array
+            resolve(result.siteUrlArray || []);
+        });
     })
 }
+
+
+async function reset()
+{
+    await new Promise ((resolve) => {
+            chrome.storage.local.set({siteUrlArray : new Array()}, () =>{
+            console.log("Reset complete");
+        }), resolve
+    })
+}
+
+//Displaying Tables at start
+displayTables();

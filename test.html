@@ -25,6 +25,38 @@
             }
             return false;
         }
+
+        let bool = false;
+
+        function promiseReturner(){
+            return new Promise((resolve, reject) => 
+        {
+            if (bool)
+            {
+                resolve(
+                    {
+                        name : "True",
+                        message: "You got it my man"
+                    }
+                )
+                 
+            }
+            else{
+                reject(
+                    {
+                        name : "False",
+                        message: "Can't get it my man"
+                    }
+                )
+            }
+        })
+        }
+
+        promiseReturner().then(
+            (resolved)=>{
+                console.log(resolved.name + " " +resolved.message)
+            }
+        ).catch((error)=> {console.log(error.name + " " + error.message)})
     </script>
 </body>
 </html>
